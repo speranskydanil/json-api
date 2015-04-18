@@ -84,17 +84,17 @@ module JsonApi
       return unless @logger
 
       @logger.call <<-heredoc
-  [JsonApi#request begin]
-  # Request
-  Method - #{method}
-  Path   - #{path}
-  Params -
-  #{params.pretty_inspect.strip}
-  # Response
-  Code - #{res.code}
-  Body -
-  #{res.body.pretty_inspect.strip}
-  [JsonApi#request end]
+[JsonApi#request begin]
+# Request
+Method - #{method}
+Path   - #{path}
+Params -
+#{params.pretty_inspect.strip}
+# Response
+Code - #{res.code}
+Body -
+#{res.body.pretty_inspect.strip}
+[JsonApi#request end]
       heredoc
     end
 
