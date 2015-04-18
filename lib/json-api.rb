@@ -66,6 +66,9 @@ class JsonApi
     end
   end
 
+  def configure_request(req)
+  end
+
   def log(method, path, params, res)
     @logger.call <<-heredoc
 [JsonApi#request begin]
@@ -80,9 +83,6 @@ Body -
 #{res.body.pretty_inspect.strip}
 [JsonApi#request end]
     heredoc
-  end
-
-  def configure_request(req)
   end
 
   def error(res)
@@ -101,6 +101,14 @@ Body -
           path.call(*args)
         end
       end
+    end
+  end
+
+  def self.method_missing(name, *args)
+    if [:get, :post, :delete, :put].include? name
+      new.send(name, *args)
+    else
+      super
     end
   end
 end
