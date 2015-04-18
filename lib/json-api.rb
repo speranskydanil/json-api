@@ -3,9 +3,9 @@ require 'json'
 require 'pp'
 
 class JsonApi
-  def initialize(base_path = nil, log = false)
+  def initialize(base_path = nil, logger = nil)
     @base_path = base_path
-    @log = log
+    @logger = logger
   end
 
   def method_missing(name, *args)
@@ -29,7 +29,7 @@ class JsonApi
     res = http(uri).request(req)
     configure_response(res)
 
-    log(method, path, params, res) if @log
+    log(method, path, params, res) if @logger
 
     res
   end
@@ -67,7 +67,7 @@ class JsonApi
   end
 
   def log(method, path, params, res)
-    puts <<-heredoc
+    @logger.call <<-heredoc
 [JsonApi#request begin]
 # Request
 Method - #{method}
