@@ -9,11 +9,6 @@ module JsonApi
   end
 
   module InstanceMethods
-    def initialize(base_path = nil, logger = nil)
-      @base_path = base_path
-      @logger = logger
-    end
-
     def method_missing(name, *args)
       if [:get, :post, :delete, :put].include? name
         request(name, *args)
@@ -23,7 +18,9 @@ module JsonApi
     end
 
     def request(method, path, params = {})
-      path = "#{@base_path}/#{path}" unless path.include? '//'
+      path = full_path(path)
+
+      params = merged_params(params)
 
       query_params, form_params = (method == :get ? [params, {}] : [{}, params])
 
@@ -35,9 +32,17 @@ module JsonApi
       res = http(uri).request(req)
       configure_response(res)
 
-      log(method, path, params, res) if @logger
+      log(method, path, params, res)
 
       res
+    end
+
+    def full_path(path)
+      (path.include?('//') or @base_path.nil?) ? path : "#{@base_path}/#{path}"
+    end
+
+    def merged_params(params)
+      @default_params.nil? ? params : @default_params.merge(params)
     end
 
     def uri(path, params)
@@ -76,6 +81,8 @@ module JsonApi
     end
 
     def log(method, path, params, res)
+      return unless @logger
+
       @logger.call <<-heredoc
   [JsonApi#request begin]
   # Request
