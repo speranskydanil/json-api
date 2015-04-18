@@ -14,7 +14,7 @@ require 'json-api'
 
 If you want to do only a couple of requests, then you could call methods directly on JsonApi.<br>
 `get`, `post`, `delete` and `put` methods are available. Parameters are passed as a hash.<br>
-`code`, `body`, `json`, `hash`, `message` are the most noticable attributes of responses.
+`code`, `body`, `json`, `hash`, `message` are the most noticeable attributes of responses.
 
 
 ```ruby
@@ -30,7 +30,7 @@ puts res.hash #=> ruby hash object from parsed json
 
 When you work with an API probably you would like to specify `base_path` for all requests.<br>
 Also you may want to specify some `default_params`.<br>
-Now lets create a wrapper with a parameterized method.
+Now lets create a wrapper with a parametrized method.
 
 ```ruby
 class GitHubApi
@@ -53,13 +53,16 @@ repos = GitHubApi.search('2015-04-01', 100) #=> array with 12 repositories
 ```
 
 We've included JsonApi module.<br>
-As you can see we can specify `@base_path` and `@default_params` in initialization. It will work for all requests.<br>
-Methods like `get` method are available now in the class, and we've used `get` in `search` method body.<br>
+As you can see we can specify `@base_path` and `@default_params` in initialization.<br>
+It will work for all requests.<br>
+Methods like `get` method are available now in the class,<br>
+and we've used `get` in `search` method body.<br>
 See "Quick requests" for details about http methods and response methods.
 
-## Parameterized initialization
+## Parametrized initialization
 
-Note we've used `GitHubApi.search` instead of `GitHubApi.new.search` variant. Library allows you to do that.<br>
+Note we've used `GitHubApi.search` instead of `GitHubApi.new.search` variant.<br>
+Library allows you to do that.<br>
 But usually you need to configure an instance of wrapper.<br>
 
 ```ruby
@@ -84,7 +87,7 @@ repos = github_api.search('2015-04-01', 100) #=> array with 12 repositories
 Usually an API have a consistent way of returning errors.<br>
 And usually you want to handle them consistently.<br>
 
-Suppose we need to handle errors as such:
+Suppose we need to handle errors as following:
 
 ```ruby
 raise 'GitHubApi: Error message: ' + res.hash['message'] unless res.ok?
@@ -100,7 +103,7 @@ end
 ```
 
 `error` method will be generated automatically for responses.<br>
-`ok?` method which was used alreay several times returns true if code is "200".
+`ok?` method which was used already several times returns true if code is "200".
 
 ## Logging
 
