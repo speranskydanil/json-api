@@ -71,12 +71,7 @@ class GitHubApi
     @default_params = { per_page: per_page }
   end
 
-  def search(created, stars)
-    res = get 'search/repositories', q: "created:>#{created} stars:>#{stars}"
-
-    raise res.hash['message'] unless res.ok?
-    res.hash['items']
-  end
+  # ...
 end
 
 github_api = GitHubApi.new(12)
@@ -109,9 +104,108 @@ end
 
 ## Logging
 
+You may specify logger for debugging. It should be a Proc object.<br>
+For example `proc { |s| puts s }` or just `method(:puts)`.<br>
+
+```ruby
+class GitHubApi
+  include JsonApi
+
+  def initialize
+    @base_path      = 'https://api.github.com'
+    @default_params = { per_page: 12 }
+    @logger         = method(:puts)
+  end
+
+  # ...
+end
+
+repos = GitHubApi.search('2015-04-01', 100)
+```
+
+Example with using ActiveSupport:
+
+```ruby
+# standalone application
+@logger = ActiveSupport::Logger.new(STDOUT).method(:info)
+# in rails
+@logger = logger.method(:info)
+```
+
+It will produce output:
+
+```
+[JsonApi#request begin]
+# Request
+Method - get
+Path   - https://api.github.com/search/repositories
+Params -
+{:per_page=>12, :q=>"created:>2015-04-01 stars:>100"}
+# Response
+Code - 200
+Body -
+{
+  "total_count": 82,
+  "incomplete_results": false,
+  "items": [
+    {
+      "id": 33538019,
+      ...
+[JsonApi#request end]
+```
+
 ## Configuring requests
 
+If you want to provide headers, or prepare request in other way,<br>
+You may override method called `configure_request`.
+
+```ruby
+def configure_request(req)
+  req['Authorization'] = session[:token]
+end
+```
+
 ## Routing
+
+It's nice to have all routes in one single place.<br>
+The library provides `routes` class method, which accepts a hash.<br>
+For every named route `#{name}_path` method will be generated automatically.<br>
+Take a look at the code.
+
+```ruby
+class GitHubApi
+  include JsonApi
+
+  def initialize
+    @base_path      = 'https://api.github.com'
+    @default_params = { per_page: 12 }
+  end
+
+  def search(created, stars)
+    res = get search_path, q: "created:>#{created} stars:>#{stars}"
+
+    raise res.error unless res.ok?
+    res.hash['items']
+  end
+
+  def user(name)
+    res = get user_path(name)
+
+    raise res.error unless res.ok?
+    res.hash
+  end
+
+  def error(res)
+    res.hash['message']
+  end
+
+  routes search: 'search/repositories',
+           user: -> name { "users/#{name}" }
+end
+
+repos = GitHubApi.search('2015-04-01', 100)
+user = GitHubApi.user('dhh')
+```
 
 **Author (Speransky Danil):**
 [Personal Page](http://dsperansky.info) |
