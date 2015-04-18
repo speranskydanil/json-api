@@ -184,6 +184,9 @@ class GitHubApi
     @default_params = { per_page: 12 }
   end
 
+  routes search: 'search/repositories',
+           user: -> name { "users/#{name}" }
+
   def search(created, stars)
     res = get search_path, q: "created:>#{created} stars:>#{stars}"
 
@@ -201,9 +204,6 @@ class GitHubApi
   def error(res)
     res.hash['message']
   end
-
-  routes search: 'search/repositories',
-           user: -> name { "users/#{name}" }
 end
 
 repos = GitHubApi.search('2015-04-01', 100)
