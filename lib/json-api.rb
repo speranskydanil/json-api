@@ -124,6 +124,14 @@ Body -
         end
       end
     end
+
+    def method_missing(name, *args)
+      if instance_methods.include? name
+        new.send(name, *args)
+      else
+        super
+      end
+    end
   end
 
   def self.method_missing(name, *args)
