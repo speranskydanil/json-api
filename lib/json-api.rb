@@ -64,12 +64,14 @@ module JsonApi
     end
 
     def configure_response(res)
-      res.body = JSON.parse(res.body) rescue {}
-
       res.instance_variable_set(:@json_api, self)
 
       def res.ok?
         code == '200'
+      end
+
+      def res.hash
+        @hash ||= JSON.parse(body) rescue {}
       end
 
       def res.error
@@ -93,7 +95,7 @@ Params -
 # Response
 Code - #{res.code}
 Body -
-#{res.body.pretty_inspect.strip}
+#{JSON.pretty_generate(res.hash)}
 [JsonApi#request end]
       heredoc
     end
