@@ -120,13 +120,14 @@ Body -
         end
       end
     end
+  end
 
-    def method_missing(name, *args)
-      if [:get, :post, :delete, :put].include? name
-        new.send(name, *args)
-      else
-        super
-      end
+  def self.method_missing(name, *args)
+    if [:get, :post, :delete, :put].include? name
+      api = Class.new.send(:include, self)
+      api.new.send(name, *args)
+    else
+      super
     end
   end
 end
