@@ -74,6 +74,10 @@ module JsonApi
         @hash ||= JSON.parse(body) rescue {}
       end
 
+      def res.json
+        @json ||= JSON.pretty_generate(hash)
+      end
+
       def res.error
         @json_api.error(self)
       end
@@ -95,7 +99,7 @@ Params -
 # Response
 Code - #{res.code}
 Body -
-#{JSON.pretty_generate(res.hash)}
+#{res.json}
 [JsonApi#request end]
       heredoc
     end
