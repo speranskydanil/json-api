@@ -27,10 +27,10 @@ module JsonApi
       uri = uri(path, query_params)
 
       req = req(method, uri, form_params)
+      req.content_type = 'application/x-www-form-urlencoded; charset=UTF-8'
       configure_request(req)
 
       res = http(uri).request(req)
-      req.content_type = 'application/x-www-form-urlencoded; charset=UTF-8'
       configure_response(res)
 
       log(method, path, params, res)
