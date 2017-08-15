@@ -1,0 +1,8 @@
+title: JSON API
+description: json-api is a simple library similar to rest-client and httparty, which helps with wrappers around APIs.
+google_analytics: UA-48799405-1
+show_downloads: true
+theme: jekyll-theme-cayman
+
+gems:
+  - jekyll-mentions
